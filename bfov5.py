@@ -3,6 +3,42 @@ import numpy as np
 import matplotlib.pyplot as plt
 from PIL import Image
 import json
+from numpy import asarray, dot, vstack
+from numpy.linalg import norm
+from numpy import arctan2, arcsin
+
+
+def plot_bfov(erp_image, bfov, class_color):
+    center_x, center_y, phi, theta, h, w = bfov[:6]
+    height, width, _ = erp_image.shape
+
+    w_erp = int(w / 360 * width)
+    h_erp = int(h / 180 * height)
+
+    phi00 = (center_x - width / 2.) * ((2. * 3.14159) / width)
+    theta00 = -(center_y - height / 2.) * (3.14159 / height)
+
+    r = max(w_erp, h_erp)  # radius of the bounding box
+    a = 3.14159 / 6  # angle in radians, you can adjust this
+
+    d = r / (2 * 1 / a)  # distance to the center of the bounding box
+
+    p = []
+    for i in range(-(r - 1) // 2, (r + 1) // 2):
+        for j in range(-(r - 1) // 2, (r + 1) // 2):
+            p += [asarray([i, j, d])]
+
+    p = asarray([dot(1, (p[ij] / norm(p[ij]))) for ij in range(r * r)])
+
+    phi = asarray([arctan2(p[ij][0], p[ij][2]) for ij in range(r * r)])
+    theta = asarray([arcsin(p[ij][1]) for ij in range(r * r)])
+
+    u = (phi / (2 * 3.14159) + 1. / 2.) * width
+    v = height - (-theta / 3.14159 + 1. / 2.) * height
+
+    plt.imshow(erp_image)
+    plt.scatter(u, v, c=class_color, s=5)
+    plt.show()
 
 def plot_bfov2(erp_image, bfov, class_color):
     center_x, center_y, phi, theta, h, w = bfov[:6]
@@ -16,11 +52,11 @@ def plot_bfov2(erp_image, bfov, class_color):
     plt.plot([x1, x2, x2, x1, x1], [y1, y1, y2, y2, y1], color=class_color)
 
 # Import the ERP image
-erp_image_path = '/home/manuel/pesquisa-mestrado/images/7fzxZ.jpg'
+erp_image_path = '/home/mstveras/360-obj-det/images/7lCpD.jpg'
 erp_image = np.array(Image.open(erp_image_path))
 
 # Read the JSON file
-with open('/home/manuel/pesquisa-mestrado/annotations/7fzxZ.json', 'r') as f:
+with open('/home/mstveras/360-obj-det/annotations/7lCpD.json', 'r') as f:
     data = json.load(f)
 
 # Generate a color map for classes
