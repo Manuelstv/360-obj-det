@@ -43,6 +43,7 @@ def plot_bfov(erp_image, bfov, class_color):
 def plot_bfov2(erp_image, bfov, class_color):
     center_x, center_y, phi, theta, h, w = bfov[:6]
     height, width, _ = erp_image.shape
+    print(height, width)
     w_erp = int(w / 360 * width)
     h_erp = int(h / 180 * height)
     x1, y1 = center_x - w_erp // 2, center_y - h_erp // 2
@@ -52,11 +53,11 @@ def plot_bfov2(erp_image, bfov, class_color):
     plt.plot([x1, x2, x2, x1, x1], [y1, y1, y2, y2, y1], color=class_color)
 
 # Import the ERP image
-erp_image_path = '/home/mstveras/360-obj-det/images/7lCpD.jpg'
+erp_image_path = '/home/mstveras/360-obj-det/images/7fBj8.jpg'
 erp_image = np.array(Image.open(erp_image_path))
 
 # Read the JSON file
-with open('/home/mstveras/360-obj-det/annotations/7lCpD.json', 'r') as f:
+with open('/home/mstveras/360-obj-det/annotations/7fBj8.json', 'r') as f:
     data = json.load(f)
 
 # Generate a color map for classes
@@ -73,7 +74,7 @@ plt.axis('off')
 for i, bfov in enumerate(data['boxes']):
     class_id = data['class'][i]
     class_color = class_to_color[class_id]
-    plot_bfov(erp_image, bfov, class_color)
+    plot_bfov2(erp_image, bfov, class_color)
 
 # Show the plot
 plt.show()

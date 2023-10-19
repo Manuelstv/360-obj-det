@@ -1,3 +1,6 @@
 yolo_annotations
 annotations
 images
+annotations_small
+images_small
+checkpoint
