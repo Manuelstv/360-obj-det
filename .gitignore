@@ -4,3 +4,5 @@ images
 annotations_small
 images_small
 checkpoint
+archive
+voc_annotations
